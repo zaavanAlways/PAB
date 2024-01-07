@@ -17,7 +17,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: const Padding(
         padding: EdgeInsets.only(top: 6.0),
         child: Text(
-          "Discover",
+          "Nakama Store",
           style: AppTheme.homeAppBar,
         ),
       ),
