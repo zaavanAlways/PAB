@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:custom_navigation_bar/custom_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:nakama_shoes/user_profile/user_profile_view.dart';
 import 'package:nakama_shoes/utils/constants.dart';
+import 'package:nakama_shoes/view/bag/bag_view.dart';
+
 import 'package:nakama_shoes/view/view.dart';
 
 class MainNavigator extends StatefulWidget {
@@ -15,9 +18,8 @@ class _MainNavigatorState extends State<MainNavigator> {
 
   List<Widget> _screens = [
     HomeView(),
-    Container(color: Colors.yellow),
-    Container(color: Colors.deepPurpleAccent),
-    Container(color: Colors.pink),
+    BagView(),
+    UserProfileView(),
   ];
 
   void _onItemTapped(int index) {

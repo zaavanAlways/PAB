@@ -6,6 +6,7 @@ import 'package:nakama_shoes/models/shoe_models.dart';
 import 'package:nakama_shoes/theme/custom_app_theme.dart';
 
 import 'package:nakama_shoes/utils/constants.dart';
+import 'package:nakama_shoes/view/details/components/detail_view.dart';
 import 'package:nakama_shoes/view/home/components/home_appBar.dart';
 
 class HomeView extends StatefulWidget {
@@ -33,74 +34,111 @@ class _HomeViewState extends State<HomeView> {
             ),
             _mainShoesListView(size),
             _moreTextAndIcon(),
-            Container(
-              width: size.width,
-              height: size.height * 0.28,
-              color: Colors.blue,
-              child: ListView.builder(
-                itemCount: availableShoes.length,
-                scrollDirection: Axis.horizontal,
-                physics: const BouncingScrollPhysics(),
-                itemBuilder: (context, index) {
-                  ShoeModel model = availableShoes[index];
-                  return Container(
-                    margin: const EdgeInsets.all(10),
-                    width: size.width * 0.5,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.white,
-                    ),
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          left: 4,
-                          child: Container(
-                            width: size.width / 13,
-                            height: size.height / 10,
-                            color: Colors.cyan,
-                            child: const RotatedBox(
-                              quarterTurns: -1,
-                              child: Center(
-                                child: Text(
-                                  "New",
-                                  style: AppTheme.homeGridNewText,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          right: 5,
-                          child: IconButton(
-                            onPressed: () {},
-                            icon: const Icon(
-                              Icons.favorite_border,
-                              color: AppConstantsColor.darkTextColor,
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          top: 25,
-                          left: 5,
-                          child: RotationTransition(
-                            turns: AlwaysStoppedAnimation(-15 / 360),
-                            child: Hero(
-                              tag: model.model,
-                              child: Image(
-                                image: AssetImage(model.imgAddress),
-                                width: size.width * 0.45,
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  );
-                },
-              ),
-            )
+            _bottomSideCategory(size)
           ],
         ),
+      ),
+    );
+  }
+
+  Container _bottomSideCategory(Size size) {
+    return Container(
+      width: size.width,
+      height: size.height * 0.28,
+      color: Colors.blue,
+      child: ListView.builder(
+        itemCount: availableShoes.length,
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        itemBuilder: (context, index) {
+          ShoeModel model = availableShoes[index];
+          return GestureDetector(
+            onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => DetailsView(
+                          isComeFromMoreSection: true,
+                          model: model,
+                        ))),
+            child: Container(
+              margin: const EdgeInsets.all(10),
+              width: size.width * 0.5,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.white,
+              ),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Positioned(
+                    top: 0,
+                    left: 4,
+                    child: Container(
+                      width: size.width / 13,
+                      height: size.height / 10,
+                      color: Colors.cyan,
+                      child: const RotatedBox(
+                        quarterTurns: -1,
+                        child: Center(
+                          child: Text(
+                            "New",
+                            style: AppTheme.homeGridNewText,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: 0,
+                    right: 5,
+                    child: IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.favorite_border,
+                        color: AppConstantsColor.darkTextColor,
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 25,
+                    top: 3,
+                    left: 5,
+                    child: RotationTransition(
+                      turns: AlwaysStoppedAnimation(-15 / 360),
+                      child: Hero(
+                        tag: model.model,
+                        child: Image(
+                          image: AssetImage(model.imgAddress),
+                          width: size.width * 0.45,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 22,
+                    left: 45,
+                    child: SizedBox(
+                      width: size.width / 4,
+                      height: size.height / 42,
+                      child: FittedBox(
+                        child: Text(
+                          "${model.name}",
+                          style: AppTheme.homeGridNameAndModel,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 10,
+                    child: Text(
+                      "\$${model.price.toStringAsFixed(2)}",
+                    ),
+                  )
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -175,7 +213,15 @@ class _HomeViewState extends State<HomeView> {
               itemBuilder: (context, index) {
                 ShoeModel model = availableShoes[index];
                 return GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => DetailsView(
+                                  isComeFromMoreSection: false,
+                                  model: model,
+                                )));
+                  },
                   child: Container(
                     margin: EdgeInsets.symmetric(
                         horizontal: size.width * 0.005,
@@ -227,11 +273,14 @@ class _HomeViewState extends State<HomeView> {
                         ),
                         RotationTransition(
                           turns: const AlwaysStoppedAnimation(-30 / 360),
-                          child: SizedBox(
-                            width: 220,
-                            height: 1000,
-                            child: Image(
-                              image: AssetImage(model.imgAddress),
+                          child: Hero(
+                            tag: model.imgAddress,
+                            child: SizedBox(
+                              width: 220,
+                              height: 1000,
+                              child: Image(
+                                image: AssetImage(model.imgAddress),
+                              ),
                             ),
                           ),
                         ),
